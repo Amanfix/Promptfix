@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Engineer - Full Stack Prompt Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <button id="themeToggle" class="theme-btn">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="particles-container" id="particles"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="gradient-text">Full Stack</span>
+                <span class="gradient-text">Prompt Engineer</span>
+            </h1>
+            <p class="hero-subtitle">Generate expert-level prompts for any field</p>
+            
+            <!-- Prompt Generation Form -->
+            <div class="prompt-generator">
+                <div class="input-group">
+                    <textarea 
+                        id="promptInput" 
+                        placeholder="Enter keywords, field, and style preferences..."
+                        rows="4"
+                    ></textarea>
+                </div>
+                <div class="input-row">
+                    <select id="fieldSelect">
+                        <option value="">Select Field</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="coding">Coding</option>
+                        <option value="vibe-coding">Vibe Coding</option>
+                        <option value="game">Game Development</option>
+                        <option value="app">App Development</option>
+                        <option value="design">Design</option>
+                        <option value="business">Business</option>
+                        <option value="education">Education</option>
+                        <option value="writing">Writing</option>
+                        <option value="research">Research</option>
+                        <option value="sales">Sales</option>
+                        <option value="ai-ml">AI & Machine Learning</option>
+                        <option value="data-science">Data Science</option>
+                        <option value="cybersecurity">Cybersecurity</option>
+                        <option value="blockchain">Blockchain</option>
+                        <option value="devops">DevOps</option>
+                        <option value="product">Product Management</option>
+                        <option value="finance">Finance</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="legal">Legal</option>
+                        <option value="hr">Human Resources</option>
+                    </select>
+                    <select id="styleSelect">
+                        <option value="">Select Style</option>
+                        <option value="professional">Professional</option>
+                        <option value="creative">Creative</option>
+                        <option value="technical">Technical</option>
+                        <option value="casual">Casual</option>
+                        <option value="academic">Academic</option>
+                    </select>
+                </div>
+                <button id="generateBtn" class="boom-btn">
+                    <span class="btn-text">BOOM</span>
+                    <div class="btn-particles"></div>
+                </button>
+            </div>
+
+            <!-- Enhanced Generated Prompt Display -->
+            <div id="generatedPrompt" class="generated-prompt hidden">
+                <div class="prompt-header">
+                    <div class="prompt-title">
+                        <i class="fas fa-magic"></i>
+                        <h3>Generated Prompt</h3>
+                        <div class="quality-badge">Premium</div>
+                    </div>
+                    <div class="prompt-actions">
+                        <button id="copyPrompt" class="copy-btn">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                        <button id="favoritePrompt" class="favorite-btn">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <button id="sharePrompt" class="share-btn">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="prompt-content" id="promptContent"></div>
+                <div class="prompt-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-clock"></i>
+                        <span id="generationTime">0.8s</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span id="qualityScore">98%</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-brain"></i>
+                        <span id="complexityLevel">Expert</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- History & Favorites Section -->
+    <section class="history-section">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-history"></i> Prompt Management</h2>
+                <p>Access your prompt history, favorites, and analytics</p>
+            </div>
+            
+            <div class="management-tabs">
+                <button class="tab-btn active" data-tab="history">
+                    <i class="fas fa-history"></i> History
+                </button>
+                <button class="tab-btn" data-tab="favorites">
+                    <i class="fas fa-heart"></i> Favorites
+                </button>
+                <button class="tab-btn" data-tab="analytics">
+                    <i class="fas fa-chart-bar"></i> Analytics
+                </button>
+                <button class="tab-btn" data-tab="settings">
+                    <i class="fas fa-cog"></i> AI Settings
+                </button>
+            </div>
+            
+            <!-- History Tab -->
+            <div class="tab-content active" id="history-tab">
+                <div class="history-controls">
+                    <input type="text" id="historySearch" placeholder="Search your prompt history..." class="search-input" oninput="searchHistory()">
+                    <button id="clearHistory" class="clear-btn">
+                        <i class="fas fa-trash"></i> Clear All
+                    </button>
+                </div>
+                <div id="historyList" class="prompt-list">
+                    <div class="empty-state">
+                        <i class="fas fa-history"></i>
+                        <h3>No History Yet</h3>
+                        <p>Generate your first prompt to see it here!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Favorites Tab -->
+            <div class="tab-content" id="favorites-tab">
+                <div class="favorites-controls">
+                    <input type="text" id="favoritesSearch" placeholder="Search your favorites..." class="search-input" oninput="searchFavorites()">
+                    <select id="favoritesSort" class="sort-select" onchange="searchFavorites()">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="alphabetical">Alphabetical</option>
+                    </select>
+                </div>
+                <div id="favoritesList" class="prompt-list">
+                    <div class="empty-state">
+                        <i class="fas fa-heart"></i>
+                        <h3>No Favorites Yet</h3>
+                        <p>Click the heart icon on any generated prompt to save it here!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Analytics Tab -->
+            <div class="tab-content" id="analytics-tab">
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-line"></i> Usage Statistics</h3>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-number" id="totalPrompts">0</span>
+                                <span class="stat-label">Total Prompts</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="totalFavorites">0</span>
+                                <span class="stat-label">Favorites</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="avgComplexity">-</span>
+                                <span class="stat-label">Avg Complexity</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="mostUsedTemplate">-</span>
+                                <span class="stat-label">Top Template</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-brain"></i> Prompt Analysis</h3>
+                        </div>
+                        <div id="promptAnalysis" class="analysis-content">
+                            <p>Generate a prompt to see detailed analysis here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Settings Tab -->
+            <div class="tab-content" id="settings-tab">
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-robot"></i> AI Provider Settings</h3>
+                        </div>
+                        <div class="api-settings">
+                            <div class="api-provider">
+                                <label>OpenAI API Key</label>
+                                <div class="input-group">
+                                    <input type="password" id="openaiKey" placeholder="sk-..." class="api-input">
+                                    <button onclick="setApiKey('openai', document.getElementById('openaiKey').value)" class="save-btn">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="api-provider">
+                                <label>Anthropic Claude API Key</label>
+                                <div class="input-group">
+                                    <input type="password" id="claudeKey" placeholder="sk-ant-..." class="api-input">
+                                    <button onclick="setApiKey('claude', document.getElementById('claudeKey').value)" class="save-btn">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="api-provider">
+                                <label>Google Gemini API Key</label>
+                                <div class="input-group">
+                                    <input type="password" id="geminiKey" placeholder="AI..." class="api-input">
+                                    <button onclick="setApiKey('gemini', document.getElementById('geminiKey').value)" class="save-btn">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-section">
+                            <h4>AI Enhancement Settings</h4>
+                            <label>
+                                <input type="checkbox" id="enableAiEnhancement" checked>
+                                Enable AI-powered prompt optimization
+                            </label>
+                            <label>
+                                <input type="checkbox" id="enableAnalytics" checked>
+                                Enable prompt analytics and insights
+                            </label>
+                        </div>
+                        
+                        <div class="settings-section">
+                            <h4>Data Management</h4>
+                            <button onclick="exportData()" class="export-btn">
+                                <i class="fas fa-download"></i> Export Data
+                            </button>
+                            <button onclick="importData()" class="import-btn">
+                                <i class="fas fa-upload"></i> Import Data
+                            </button>
+                            <button onclick="clearAllHistory()" class="danger-btn">
+                                <i class="fas fa-trash"></i> Clear All History
+                            </button>
+                            <button onclick="clearAllFavorites()" class="danger-btn">
+                                <i class="fas fa-heart-broken"></i> Clear All Favorites
+                            </button>
+                        </div>
+                        
+                        <div class="ai-preferences">
+                            <h4>AI Enhancement Preferences</h4>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="enableAiEnhancement" checked>
+                                <span class="checkmark"></span>
+                                Enable AI-powered prompt optimization
+                            </label>
+                            
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="enableAnalytics" checked>
+                                <span class="checkmark"></span>
+                                Enable prompt analytics and insights
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Space Section -->
+    <section class="space-section">
+        <div class="space-background">
+            <div class="stars"></div>
+            <div class="planets"></div>
+            <div class="nebula"></div>
+        </div>
+        <div class="container">
+            <div class="space-content">
+                <h2 class="space-title">
+                    <span class="cosmic-text">Cosmic Prompt Generator</span>
+                    <div class="title-glow"></div>
+                </h2>
+                <p class="space-subtitle">Harness the power of the universe for infinite creativity</p>
+                
+                <div class="cosmic-features">
+                    <div class="cosmic-feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h3>Quantum Prompts</h3>
+                        <p>Generate prompts that exist in multiple dimensions of creativity</p>
+                    </div>
+                    <div class="cosmic-feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-satellite"></i>
+                        </div>
+                        <h3>Neural Networks</h3>
+                        <p>AI-powered prompt generation with cosmic intelligence</p>
+                    </div>
+                    <div class="cosmic-feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-meteor"></i>
+                        </div>
+                        <h3>Stellar Results</h3>
+                        <p>Premium quality prompts that shine brighter than stars</p>
+                    </div>
+                </div>
+                
+                <div class="cosmic-generator">
+                    <div class="cosmic-input">
+                        <input type="text" id="cosmicInput" placeholder="Enter your cosmic vision...">
+                        <button id="cosmicGenerate" class="cosmic-btn">
+                            <span>Launch</span>
+                            <div class="cosmic-particles"></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Style Learning Section -->
+    <section class="style-learning">
+        <div class="container">
+            <h2>Teach Your Style</h2>
+            <p>Upload your own prompts to help AI learn your preferred style and tone</p>
+            <div class="style-input">
+                <textarea 
+                    id="styleInput" 
+                    placeholder="Paste your example prompts here to teach the AI your style..."
+                    rows="6"
+                ></textarea>
+                <button id="learnStyleBtn" class="learn-btn">Learn My Style</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Templates Library -->
+    <section class="templates-library">
+        <div class="container">
+            <div class="library-header">
+                <h2>Prompt Templates Library</h2>
+                <div class="search-filter">
+                    <input type="text" id="searchInput" placeholder="Search templates...">
+                    <select id="filterField">
+                        <option value="">All Fields</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="coding">Coding</option>
+                        <option value="vibe-coding">Vibe Coding</option>
+                        <option value="game">Game Development</option>
+                        <option value="app">App Development</option>
+                        <option value="design">Design</option>
+                        <option value="business">Business</option>
+                        <option value="education">Education</option>
+                        <option value="writing">Writing</option>
+                        <option value="research">Research</option>
+                        <option value="sales">Sales</option>
+                        <option value="ai-ml">AI & Machine Learning</option>
+                        <option value="data-science">Data Science</option>
+                        <option value="cybersecurity">Cybersecurity</option>
+                        <option value="blockchain">Blockchain</option>
+                        <option value="devops">DevOps</option>
+                        <option value="product">Product Management</option>
+                        <option value="finance">Finance</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="legal">Legal</option>
+                        <option value="hr">Human Resources</option>
+                    </select>
+                </div>
+            </div>
+            <div class="templates-grid" id="templatesGrid">
+                <!-- Templates will be dynamically loaded here -->
+            </div>
+            <div class="load-more">
+                <button id="loadMoreBtn" class="load-more-btn">Load More Templates</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Prompt Engineer</h3>
+                    <p>Next-generation prompt generator</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#about">About</a>
+                    <a href="#contact">Contact</a>
+                    <a href="#privacy">Privacy Policy</a>
+                </div>
+                <div class="footer-social">
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Prompt Engineer. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
